@@ -24,7 +24,7 @@ class BinaryTree(object):
         # assuming root was passed as a value that was supposed to be a root value of the binary treee
         self.root = Node(root)
 
-    def print(self, traversal_type):
+    def _print(self, traversal_type):
         if traversal_type == 'preorder':
             return self._preorder(tree.root, "")
         elif traversal_type == 'inorder':
@@ -61,6 +61,15 @@ class BinaryTree(object):
             traversal = self._postorder(root.right, traversal)
             traversal += (str(root.value) + "->")
         return traversal
+
+    # height of the tree
+    def _getHeight(self, root):
+        if not root:
+            return 0
+        leftHeight = self._getHeight(root.left)
+        rightHeight = self._getHeight(root.right)
+
+        return 1 + max(leftHeight, rightHeight)
     # get all paths
 
     def _getAllPaths(self, root, currentPath, allPaths):
@@ -92,6 +101,29 @@ class BinaryTree(object):
                     queue.append(node.right)
             levels.append(level_items)
         return levels
+
+    # diameter of binary tree,
+    # buggy 4567890-
+    def _getDiameter(self, root):
+        nodes = self._getNodes(root)
+        # for each node, get the left and right height of the tree
+        diameter = 0
+        for node in nodes:
+            leftHeight = self._getHeight(node.left)
+            rightHeight = self._getHeight(node.right)
+            currentDiameter = max(leftHeight, rightHeight)
+            diameter = max(diameter, currentDiameter)
+        return diameter
+
+    # returns the list of all the nodes in a tree
+    def _getNodes(self, root, nodes=[]):
+        if not root:
+            return None
+        nodes.append(root)
+        self._getNodes(root.left, nodes)
+        self._getNodes(root.right, nodes)
+
+        return nodes
 
 
 """
@@ -129,12 +161,18 @@ tree.root.right.left = Node(6)
 tree.root.right.right = Node(7)
 tree.root.right.right.right = Node(8)
 
-# print(tree.print("preorder"))
-# print(tree.print("inorder"))
-# print(tree.print("postorder"))
+# print(tree._print("preorder"))
+# print(tree._print("inorder"))
+# print(tree._print("postorder"))
 
 # allPaths = []
 # tree._getAllPaths(tree.root, [], allPaths)
 # print(allPaths)
-allLevels = tree._getLevels(tree.root)
-print(allLevels)
+# allLevels = tree._getLevels(tree.root)
+# print(allLevels)
+
+# height = tree._getHeight(tree.root)
+# print(height)
+
+diameter = tree._getDiameter(tree.root)
+print(diameter)
